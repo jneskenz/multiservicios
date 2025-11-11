@@ -129,7 +129,8 @@ class GrupoEmpresaController extends Controller
     */
    public function show(GrupoEmpresa $grupo_empresa)
    {
-      $grupo_empresa->load('propietarios', 'empresas', 'usuarios');
+      // OPTIMIZADO: Cargar solo lo necesario sin eager loading recursivo
+      // $grupo_empresa->load('propietarios', 'empresas', 'usuarios');
 
       // Estadísticas del grupo
       $stats = [
@@ -151,6 +152,7 @@ class GrupoEmpresaController extends Controller
       $actividad = Activity::inLog('default')
          ->where('subject_type', GrupoEmpresa::class)
          ->where('subject_id', $grupo_empresa->id)
+         ->select(['id', 'description', 'subject_id', 'subject_type', 'causer_id', 'causer_type', 'created_at'])
          ->latest()
          ->take(20)
          ->get();

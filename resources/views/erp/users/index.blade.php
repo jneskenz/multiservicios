@@ -1,4 +1,4 @@
-@extends('layouts.vuexy')
+@extends('layouts.app-ws')
 
 @section('title', 'Gestión de Usuarios - ERP Multisoft')
 

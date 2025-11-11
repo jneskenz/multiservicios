@@ -88,10 +88,15 @@ class AdminDashboardController extends Controller
      */
     public function usuarioDetalle(User $user)
     {
-        $user->load('grupoEmpresa', 'empresa', 'roles', 'permissions');
+        // OPTIMIZADO: Evitar cargar relaciones pesadas recursivas
+        // $user->load('grupoEmpresa', 'empresa', 'roles', 'permissions');
         
-        // Actividad del usuario
+        // Solo cargar nombres para mostrar, sin relaciones anidadas
+        $user->load(['roles:id,name', 'permissions:id,name']);
+        
+        // Actividad del usuario - limitada a campos esenciales
         $actividad = Activity::where('causer_id', $user->id)
+            ->select(['id', 'description', 'subject_id', 'subject_type', 'causer_id', 'causer_type', 'created_at'])
             ->latest()
             ->take(50)
             ->get();

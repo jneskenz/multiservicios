@@ -32,6 +32,8 @@ class DatabaseSeeder extends Seeder
             LocalMultiempresaSeeder::class,     // 17 locales + relaciones empresa-local            // ═══════════════════════════════════════════════════════════
             // FASE 3: USUARIOS Y SUPERADMIN
             // ═══════════════════════════════════════════════════════════
+
+            ModuloYMenu::class,               // Módulos y Menús
             
             UsuarioMultiempresaSeeder::class,   // 13 usuarios con diferentes roles
             

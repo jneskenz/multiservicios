@@ -27,7 +27,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    // protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Redirigir usuarios después del login según su rol y empresa asignada
@@ -37,24 +37,29 @@ class LoginController extends Controller
         $user = Auth::user();
 
         Log::info('Usuario autenticado: ' . $user->email);
-        Log::info('Usuario isSuperAdmin: ' . $user->isSuperAdmin());
 
         // 🔹 Si es super_admin
-        // if ($user->hasRole('super_admin')) { // con rol
-        if ($user->isSuperAdmin()) { // sin rol
-            Log::info('Usuario entro ==> ');
-
+        if ($user->isSuperAdmin()) {
+            Log::info('Usuario es SuperAdmin, redirigiendo a /admin');
             return '/admin';
         }
 
-        // 🔹 Si tiene empresa asignada
-        if ($user->grupo_empresa && $user->grupo_empresa->slug) {
-            Log::info('Usuario entro 2: ');
+        // 🔹 Si tiene grupo asignado (cargar SOLO el slug, SIN relaciones)
+        if ($user->grupo_empresa_id) {
+            Log::info('Obteniendo slug del grupo ID: ' . $user->grupo_empresa_id);
+            
+            $grupoSlug = \App\Models\GrupoEmpresa::where('id', $user->grupo_empresa_id)
+                ->value('slug');
 
-            return '/' . $user->grupo_empresa->slug . '/';
+            Log::info('Grupo slug obtenido: ' . $grupoSlug);
+            
+            if ($grupoSlug) {
+                Log::info('Usuario redirigido a grupo: ' . $grupoSlug);
+                return '/' . $grupoSlug . '/';
+            }
         }
 
-        Log::info('Usuario entro 3: ');
+        Log::info('Usuario sin grupo asignado, redirigiendo a /home');
 
         // 🔹 Si no tiene empresa asignada
         return '/home';

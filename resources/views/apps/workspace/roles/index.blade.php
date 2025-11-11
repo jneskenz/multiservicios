@@ -1,23 +1,23 @@
-@extends('layouts.vuexy')
+@extends('layouts.app-ws')
 
 @section('title', 'Gestión de Roles - ERP Multisoft')
 
 @php
-    $dataBreadcrumb = [
+    $breadcrumbs = [
         'title' => 'Gestión de Roles y Permisos',
         'description' => 'Gestiona y controla los roles y permisos',
         'icon' => 'ti tabler-shield',
-        'breadcrumbs' => [
-            ['name' => 'Config. Administrativa', 'url' => route('home')],
-            ['name' => 'Roles y permisos', 'url' => route('roles.index'), 'active' => true]
+        'items' => [
+            ['name' => 'Config. Administrativa', 'url' => 'javascript(void)'],
+            ['name' => 'Roles y permisos', 'url' => 'javascript(void)']
         ],
-        'actions' => [
-            // ['name' => 'Crear Rol', 'url' => route('roles.create'), 'icon' => 'ti tabler-plus', 'permission' => 'roles.create'],
-        ],
-        'stats' => [
-            ['name' => 'Total Roles', 'value' => Spatie\Permission\Models\Role::count(), 'icon' => 'ti tabler-building', 'color' => 'bg-label-primary'],
-            ['name' => 'Total Permisos Asignados', 'value' => $roles->where('estado', true)->count(), 'icon' => 'ti tabler-circle-check', 'color' => 'bg-label-success'],
-        ]
+        // 'actions' => [
+        //     // ['name' => 'Crear Rol', 'url' => route('roles.create'), 'icon' => 'ti tabler-plus', 'permission' => 'roles.create'],
+        // ],
+        // 'stats' => [
+        //     ['name' => 'Total Roles', 'value' => Spatie\Permission\Models\Role::count(), 'icon' => 'ti tabler-building', 'color' => 'bg-label-primary'],
+        //     ['name' => 'Total Permisos Asignados', 'value' => $roles->where('estado', true)->count(), 'icon' => 'ti tabler-circle-check', 'color' => 'bg-label-success'],
+        // ]
     ];
 
     $dataHeaderCard = [
@@ -31,7 +31,7 @@
                 'typeAction' => 'btnToggle', // btnIdEvent, btnLink, btnToggle, btnInfo
                 'name' => 'Crear Rol',
                 'icon' => 'ti tabler-plus',
-                'permission' => 'roles.create',
+                'permission' => 'crear_roles',
                 'typeButton' => 'btn-primary',
                 'idModal' => 'createRoleModal' // necesario si es btnToggle
             ],
@@ -43,7 +43,26 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
 
-    @include('layouts.vuexy.breadcrumb', $dataBreadcrumb)
+    {{-- @include('layouts.vuexy.breadcrumb', $dataBreadcrumb) --}}
+
+    <x-breadcrumbs :items="$breadcrumbs">
+
+        <x-slot:extra>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-label-primary me-2">
+                    <i class="ti tabler-building"></i>
+                </span>
+                <span class="text-muted">Total Roles: {{ Spatie\Permission\Models\Role::count() }}</span>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-label-success me-2">
+                    <i class="ti tabler-circle-check"></i>
+                </span>
+                <span class="text-muted">Roles Activas: {{ $roles->where('estado', true)->count() }}</span>
+            </div>
+        </x-slot:extra>
+
+    </x-breadcrumbs>
 
     <div class="row">
         <div class="col-12">
@@ -51,11 +70,31 @@
 
                 @include('layouts.vuexy.header-card', $dataHeaderCard)
 
+                {{-- <x-card-header 
+                        title="Lista de Empresas" 
+                        description=""
+                        textColor="text-primary"
+                        icon="ti tabler-building"
+                        iconColor="bg-label-primary"
+                    >
+                        @can('crear_empresas')
+                            <a href="{{ route('grupo.empresas.create', ['grupo' => $grupoActual->slug ?? request()->route('grupo')]) }}" class="btn btn-primary waves-effect">
+                                <i class="ti tabler-plus me-2"></i>
+                                Crear Empresa
+                            </a>
+                        @endcan
+                </x-card-header> --}}
+
                 <div class="card-header">
                     <h6 class="mb-0">
                         <i class="ti tabler-shield me-2"></i>
                         Roles del Sistema
                     </h6>
+                </div>
+
+                <div class="card-body">
+                    <!-- Componente Livewire con estilo Vuexy -->
+                    @livewire('workspace.roles-table')
                 </div>
 
                 <div class="card-body">
@@ -226,7 +265,7 @@
 </div>
 
 <!-- Modal para crear rol -->
-@can('roles.create')
+@can('crear_roles')
 <div class="modal fade" id="createRoleModal" tabindex="-1" aria-labelledby="createRoleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

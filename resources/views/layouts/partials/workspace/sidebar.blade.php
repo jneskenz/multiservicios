@@ -75,22 +75,22 @@
             </a>
 
             <ul class="menu-sub">
-                @can('ver_users')
-                    <li class="menu-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
-                        <a href="{{ route('grupo.users.index', ['grupo' => $grupoActual->slug]) }}" class="menu-link">
+                @can('ver_usuarios')
+                    <li class="menu-item {{ request()->routeIs('usuarios.*') ? 'active' : '' }}">
+                        <a href="{{ route('grupo.usuarios.index', ['grupo' => $grupoActual->slug]) }}" class="menu-link">
                             <i class="menu-icon tf-icons ti tabler-user"></i>
                             <div data-i18n="Basic">Usuarios</div>
-                            @if (App\Models\User::count() > 0)
+                            {{-- @if (App\Models\User::count() > 0)
                                 <div class="badge text-bg-primary rounded-pill ms-auto">
                                     {{ App\Models\User::count() }}
                                 </div>
-                            @endif
+                            @endif --}}
                         </a>
                     </li>
                 @endcan
                 @can('ver_roles')
                     <li class="menu-item {{ request()->routeIs('roles.*') ? 'active' : '' }}">
-                        <a href="{{ route('grupo.empresas.index', ['grupo' => $grupoActual->slug]) }}" class="menu-link">
+                        <a href="{{ route('grupo.roles.index', ['grupo' => $grupoActual->slug]) }}" class="menu-link">
                             <i class="menu-icon tf-icons ti tabler-shield"></i>
                             <div data-i18n="Basic">Roles y Permisos</div>
                             @if (Spatie\Permission\Models\Role::count() > 0)
@@ -311,7 +311,7 @@
             </a>
         </li>
         
-        @include('components.contexto-navbar')
+        {{-- @include('components.contexto-navbar') --}}
 
     </ul>
 </aside>

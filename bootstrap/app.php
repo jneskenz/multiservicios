@@ -13,6 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'superadmin' => \App\Http\Middleware\SuperAdminMiddleware::class,
+            'grupo-empresa.access' => \App\Http\Middleware\ValidarAccesoGrupoEmpresa::class,
+            // 'empresa.access' => \App\Http\Middleware\ValidarAccesoEmpresa::class,
+            'rol-administrador' => \App\Http\Middleware\ValidarRolAdministrador::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

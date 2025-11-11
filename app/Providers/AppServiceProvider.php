@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,5 +27,17 @@ class AppServiceProvider extends ServiceProvider
         Blade::if('superadmin', function () {
             return Auth::check() && Auth::user()->isSuperAdmin();
         });
+
+        // Query logging DESACTIVADO temporalmente para evitar consumo excesivo de memoria
+        // if (app()->environment('local')) {
+        //     DB::listen(function ($query) {
+        //         Log::channel('daily')->info('SQL Query', [
+        //             'sql' => $query->sql,
+        //             'bindings' => $query->bindings,
+        //             'time' => $query->time . ' ms',
+        //         ]);
+        //     });
+        // }
+
     }
 }

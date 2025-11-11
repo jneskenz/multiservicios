@@ -16,14 +16,26 @@ class Local extends Model
     protected $table = 'locales';
 
     protected $fillable = [
-        'descripcion',
+        'grupo_empresa_id',
+        'sede_id',
+        'nombre',
+        'slug',
         'codigo',
+        'descripcion',
+        'tipo',
         'direccion',
-        'correo',
+        'referencia',
+        'latitud',
+        'longitud',
+        'email',
         'telefono',
         'whatsapp',
+        'responsable_id',
+        'horarios',
+        'capacidad_personas',
+        'area_m2',
+        'activo',
         'estado',
-        'sede_id',
     ];
 
     protected $casts = [
@@ -33,14 +45,44 @@ class Local extends Model
         'deleted_at' => 'datetime',
     ];
 
-    /*
-    * Relacion: Local pertenece a una Sede
-    */
+    // ==================== RELACIONES ====================
+    
+    /**
+     * Relación con GrupoEmpresa
+     * Un local pertenece a un grupo empresarial
+     */
+    public function grupoEmpresa()
+    {
+        return $this->belongsTo(\App\Models\GrupoEmpresa::class, 'grupo_empresa_id');
+    }
+
+    /**
+     * Relación con Sede
+     * Un local pertenece a una sede (ubicación física dentro del grupo)
+     */
     public function sede()
     {
         return $this->belongsTo(Sede::class, 'sede_id');
     }
 
+    /**
+     * Relación muchos-a-muchos con Empresas
+     * Un local puede tener múltiples empresas operando en él
+     * Múltiples empresas pueden compartir el mismo local
+     */
+    public function empresas()
+    {
+        return $this->belongsToMany(
+            Empresa::class,
+            'empresa_local',
+            'local_id',
+            'empresa_id'
+        )->withPivot(['fecha_inicio', 'fecha_fin', 'es_principal', 'activo'])
+         ->withTimestamps();
+    }
+
+    // ==================== SCOPES ====================
+    
     /**
      * Scope para filtrar locales activos
      */
@@ -91,13 +133,6 @@ class Local extends Model
                                 ->orWhere('descripcion', 'LIKE', "%$termino%");
                 });
         });
-    }
-
-    public function empresas()
-    {
-        return $this->belongsToMany(Empresa::class, 'empresa_local', 'local_id', 'empresa_id')
-                    ->withPivot(['activo', 'fecha_inicio', 'es_principal'])
-                    ->withTimestamps();
     }
 
 
